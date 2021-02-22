@@ -20,6 +20,7 @@
     - { role: apprise, tags: ['apprise'] }
     - { role: archivebox, tags: ['archivebox'] }
     - { role: asshama, tags: ['asshama'] }
+    - { role: atlassian-db, tags: ['atlassian-db'] }
     - { role: autoscan, tags: ['autoscan'] }
     - { role: bazarrx, tags: ['bazarrx'] }
     - { role: beets, tags: ['beets'] }
@@ -61,6 +62,7 @@
     - { role: influxdb, tags: ['influxdb'] }
     - { role: invoiceninja, tags: ['invoiceninja'] }
     - { role: jellyfin, tags: ['jellyfin'] }
+    - { role: jira, tags: ['jira'] }
     - { role: jirafeau, tags: ['jirafeau'] }
     - { role: kcptun-client, tags: ['kcptun-client'] }
     - { role: kcptun-server, tags: ['kcptun-server'] }
