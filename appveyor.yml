@@ -29,6 +29,7 @@ environment:
     apprise
     archivebox
     asshama
+    atlassian-db
     autoscan
     bazarrx
     beets
@@ -64,6 +65,7 @@ environment:
     invoiceninja
     jdownloader2
     jellyfin
+    jira
     jirafeau
     kitana
     komga
