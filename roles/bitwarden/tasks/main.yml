@@ -58,7 +58,7 @@
       ROCKET_PORT: "6423"
       VIRTUAL_HOST: "bw.{{ user.domain }}"
       VIRTUAL_PORT: "6423"
-      LETSENCRYPT_HOST: "bitwarden.{{ user.domain }}"
+      LETSENCRYPT_HOST: "bw.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
       - "/opt/bitwarden:/data"
