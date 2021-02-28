@@ -30,6 +30,7 @@ environment:
     archivebox
     asshama
     atlassian-db
+    atlassian-db-admin
     autoscan
     bazarrx
     beets
