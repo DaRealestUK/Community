@@ -1,0 +1,62 @@
+#########################################################################
+# Title:            Community: Confluence                               #
+# Author(s):        FullCycle                                           #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  atlassian/confluence-server                         #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+- name: "Setting CloudFlare DNS Record"
+  include_role:
+    name: cloudflare-dns
+  vars:
+    record: confluence
+  when: cloudflare_enabled
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: confluence
+    state: absent
+
+- name: Create confluence directories
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
+  with_items:
+    - /opt/confluence
+
+- name: Create and start container
+  docker_container:
+    name: confluence
+    image: "atlassian/confluence-server:latest"
+    pull: yes
+    published_ports:
+      - "8090:8090"
+      - "8091:8091"
+    env:
+      TZ: "{{ tz }}"
+      PUID: "{{ uid }}"
+      PGID: "{{ gid }}"
+      VIRTUAL_HOST: "confluence.{{ user.domain }}"
+      VIRTUAL_PORT: "8090"
+      LETSENCRYPT_HOST: "confluence.{{ user.domain }}"
+      LETSENCRYPT_EMAIL: "{{ user.email }}"
+      ATL_TOMCAT_SECURE: "true"
+      ATL_TOMCAT_SCHEME: "https"
+      ATL_PROXY_PORT: "443"
+      ATL_PROXY_NAME: "confluence.{{ user.domain }}"
+      JVM_MINIMUM_MEMORY: "2048m"
+      JVM_MAXIMUM_MEMORY: "8192m"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/opt/confluence:/var/atlassian/application-data/confluence"
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - confluence
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started
