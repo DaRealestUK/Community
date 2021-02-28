@@ -39,6 +39,7 @@ environment:
     calibre
     calibre-web
     comicstreamer
+    confluence
     couchpotato
     coder
     comixed
