@@ -1,0 +1,63 @@
+#########################################################################
+# Title:            Community: Atlassian-db-admin                       #
+# Author(s):        FullCycle                                           #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  dpage/pgadmin4                                      #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+- name: "Setting CloudFlare DNS Record"
+  include_role:
+    name: cloudflare-dns
+  vars:
+    record: atlassian-db-admin
+  when: cloudflare_enabled
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: atlassian-db-admin
+    state: absent
+
+- name: Create atlassian-db-admin directories
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
+  with_items:
+    - /opt/atlassian-db-admin
+    - /opt/atlassian-db-admin/pgadminData
+    - /opt/atlassian-db-admin/pgAdminApplicationData
+
+- name: Create and start container
+  docker_container:
+    name: atlassian-db-admin
+    image: "dpage/pgadmin4:latest"
+    pull: yes
+    published_ports:
+      - "5050:80"
+    env:
+      TZ: "{{ tz }}"
+      PUID: "{{ uid }}"
+      PGID: "{{ gid }}"
+      VIRTUAL_HOST: "atlassian-db-admin.{{ user.domain }}"
+      VIRTUAL_PORT: "5050"
+      LETSENCRYPT_HOST: "atlassian-db-admin.{{ user.domain }}"
+      LETSENCRYPT_EMAIL: "{{ user.email }}"
+      ATL_TOMCAT_SECURE: "true"
+      ATL_TOMCAT_SCHEME: "https"
+      ATL_PROXY_PORT: "443"
+      ATL_PROXY_NAME: "atlassian-db-admin.{{ user.domain }}"
+      PGADMIN_DEFAULT_EMAIL: "postgres"
+      PGADMIN_DEFAULT_PASSWORD: "SuperSecret"
+    volumes:
+      - "/opt/atlassian-db-admin/pgadminData:/pgadmin4"
+      - "/opt/atlassian-db-admin/pgAdminApplicationData:/var/lib/pgadmin"
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - atlassian-db-admin
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started
