@@ -21,6 +21,7 @@
     - { role: archivebox, tags: ['archivebox'] }
     - { role: asshama, tags: ['asshama'] }
     - { role: atlassian-db, tags: ['atlassian-db'] }
+    - { role: atlassian-db-admin, tags: ['atlassian-db-admin'] }
     - { role: autoscan, tags: ['autoscan'] }
     - { role: bazarrx, tags: ['bazarrx'] }
     - { role: beets, tags: ['beets'] }
